@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  const apiKey = process.env.OMDB_API_KEY;
+  const apiKey = process.env.NEXT_PUBLIC_OMDB_API_KEY;
   const url = `http://www.omdbapi.com/?i=${encodeURIComponent(imdbId)}&plot=full&apikey=${apiKey}`;
 
   try {

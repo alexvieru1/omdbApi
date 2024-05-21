@@ -1,12 +1,8 @@
+import { MovieType } from '@/models/movie';
 import { NextRequest, NextResponse } from 'next/server';
 
-type Movie = {
-    Title: string;
-    Year: string;
-    imdbID: string;
-    Type: string;
-    Poster: string;
-};
+
+type Movie = MovieType;
 
 async function fetchMovies(page: number, apiKey: string): Promise<Movie[]> {
     const url = `http://www.omdbapi.com/?s=movie&type=movie&apikey=${apiKey}&page=${page}`;
@@ -20,7 +16,7 @@ async function fetchMovies(page: number, apiKey: string): Promise<Movie[]> {
 
 // GET for 100 movies
 export async function GET(req: NextRequest) {
-    const apiKey = process.env.OMDB_API_KEY as string;
+    const apiKey = process.env.NEXT_PUBLIC_OMDB_API_KEY as string;
     const totalMovies = [];
     try {
         for (let page = 1; page <= 10; page++) {

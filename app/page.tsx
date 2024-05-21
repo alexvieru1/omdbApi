@@ -5,35 +5,25 @@ import NavBar from "@/components/NavBar";
 import HeroSection from "@/components/HeroSection";
 import { motion } from "framer-motion";
 import Modal from "@/components/Modal";
+import { MovieType } from "@/models/movie";
+import { useSelector } from "react-redux";
+import { RootState } from "./store";
+import { fetchMovies } from "@/features/movies/movieSlice";
+import { useDispatch } from "@/hooks/useDispatch";
+import Image from "next/image";
+import Link from "next/link";
 
-interface Movie {
-  imdbID: string;
-  Poster: string;
-  Title: string;
-}
+type Movie = Pick<MovieType, "imdbID" | "Poster" | "Title">;
 
 export default function Home() {
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const { movies, loading } = useSelector((state: RootState) => state.movies);
 
   useEffect(() => {
-    async function loadMovies() {
-      const response = await fetch("/api/movies", { method: "GET" });
-      if (!response.ok) {
-        throw new Error("Failed to fetch");
-      }
-      const data = await response.json();
-      setMovies(data);
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
-      // console.log(data);
-    }
+    dispatch(fetchMovies());
+  }, [dispatch]);
 
-    loadMovies();
-  }, []);
-
-  // console.log(movies);
+  console.log(movies);
   return (
     <div>
       {loading ? (
@@ -55,7 +45,16 @@ export default function Home() {
                 }}
                 viewport={{ once: true }}
               >
-                <Modal imdbID={movie.imdbID} moviePoster={movie.Poster} />
+                {/* <Modal imdbID={movie.imdbID} moviePoster={movie.Poster} /> */}
+                <Link href={`/movies/${movie.imdbID}`}>
+                  <Image
+                    className="rounded-lg glow-wrapper"
+                    src={movie.Poster}
+                    width={300}
+                    height={500}
+                    alt="poster"
+                  />
+                </Link>
                 <div>
                   <p className="mt-2">{movie?.Title}</p>
                 </div>
